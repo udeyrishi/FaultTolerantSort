@@ -221,10 +221,6 @@ public class RandomlyFailingList<E> implements List<E> {
         });
     }
 
-    private interface Operation<T> {
-        T execute();
-    }
-
     private static class RandomlyFailingOperationWrapper {
         private final double failureProbability;
         private long count = 0;
