@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Timer;
@@ -10,12 +11,13 @@ public class RecoveryBlocksExecutor<T> implements Operation<T> {
     private final long variantTimeLimitMilliseconds;
     private final AcceptanceTest<T> acceptanceTest;
 
+    // Needed because of possible unsafe use of varargs. Safe here
     @SafeVarargs
     public RecoveryBlocksExecutor(long variantTimeLimitMilliseconds,
                                   AcceptanceTest<T> acceptanceTest,
                                   final Variant<T> primaryVariant,
                                   final Variant<T>... backupVariants) {
-        variants = Arrays.asList(backupVariants);
+        variants = new ArrayList<>(Arrays.asList(backupVariants));
         variants.add(0, primaryVariant);
 
         this.variantTimeLimitMilliseconds = variantTimeLimitMilliseconds;
@@ -39,7 +41,7 @@ public class RecoveryBlocksExecutor<T> implements Operation<T> {
 
                     // Adjudicator
                     T result = variantThread.getResult();
-                    if (acceptanceTest.testResult(result)) {
+                    if (acceptanceTest == null || acceptanceTest.testResult(result)) {
                         return result;
                     } else {
                         // Local exception
