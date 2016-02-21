@@ -24,6 +24,11 @@ public class DataSorter {
                 public Integer convert(String source) {
                     return Integer.parseInt(source);
                 }
+
+                @Override
+                public boolean isNullEquivalent(String source) {
+                    return source == null || source.trim().isEmpty();
+                }
             });
         } catch (IOException e) {
             System.err.println(String.format("IOException encountered when reading from file: %s", e.getMessage()));
@@ -54,6 +59,11 @@ public class DataSorter {
                 @Override
                 public CharSequence convert(Integer source) {
                     return source.toString();
+                }
+
+                @Override
+                public boolean isNullEquivalent(Integer source) {
+                    return source == null;
                 }
             });
         } catch (IOException e) {
@@ -99,12 +109,15 @@ public class DataSorter {
 
     private interface Converter<T1, T2> {
         T2 convert(T1 source);
+        boolean isNullEquivalent(T1 source);
     }
 
     private static <T1, T2> List<T2> convertList(List<T1> src, Converter<T1, T2> converter) {
         ArrayList<T2> output = new ArrayList<>();
         for (T1 i : src) {
-            output.add(converter.convert(i));
+            if (!converter.isNullEquivalent(i)) {
+                output.add(converter.convert(i));
+            }
         }
         return output;
     }
