@@ -13,10 +13,19 @@ JNIEXPORT void JNICALL Java_NativeInsertionSortOperation_insertionSort
     (*env)->ReleaseIntArrayElements(env, data, data_c, 0);
 }
 
+void swap(jint *data, int i, int j) {
+    jint temp = data[j];
+    data[j] = data[i];
+    data[i] = temp;
+}
+
 void insertion_sort(jint *data, int length, double failure_probability) {
-//    for (int i = 0; i < length; ++i) {
-//        printf("%d ", data[i]);
-//    }
-//
-//    printf("\nEnd C\n");
+    for (int end = length; end >= 0; --end) {
+        for (int i = 0; i < end - 1; ++i) {
+            int index = i;
+            for (int j = index + 1; j > 0 && (data[j] < data[index]); --j) {
+                swap(data, j, index--);
+            }
+        }
+    }
 }
