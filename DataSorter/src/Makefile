@@ -13,11 +13,16 @@ export LD_LIBRARY_PATH := $(LD_LIBRARY_PATH):.
 CC=gcc
 JAVA_COMPILER=javac
 JAVA_SRC=*.java
+JAVA_FLAGS=-Xlint:unchecked
 NATIVE_SRC=*.c
 NATIVE_FLAGS=-I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/$(OS_NAME) -shared -fpic
 
-default: $(SRC)
-	$(JAVA_COMPILER) $(JAVA_SRC)
+default: native java
+
+java: $(JAVA_SRC)
+	$(JAVA_COMPILER) $(JAVA_FLAGS) $(JAVA_SRC)
+
+native: $(NATIVE_SRC)
 	$(CC) $(NATIVE_FLAGS) -o $(NATIVE_TARGET) $(NATIVE_SRC)
 
 clean:
