@@ -12,7 +12,7 @@ public class HeapSortOperation<T extends Comparable<T>> implements Operation<Lis
     }
 
     @Override
-    public String getVariantName() {
+    public String getName() {
         return VARIANT_NAME;
     }
 

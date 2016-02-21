@@ -21,7 +21,7 @@ public class NativeInsertionSortOperation implements Operation<List<Integer>>, V
         this.data = data;
     }
     @Override
-    public String getVariantName() {
+    public String getName() {
         return VARIANT_NAME;
     }
 
