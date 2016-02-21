@@ -4,21 +4,11 @@ import java.util.*;
  * Created by rishi on 2016-02-20.
  */
 public class RandomlyFailingList<E> implements List<E> {
-    private final ArrayList<E> elements;
+    private final List<E> elements;
     private final RandomlyFailingOperationWrapper operationWrapper;
 
-    public RandomlyFailingList(double failureProbability) {
-        elements = new ArrayList<>();
-        operationWrapper = new RandomlyFailingOperationWrapper(failureProbability);
-    }
-
-    public RandomlyFailingList(Collection<? extends E> c, double failureProbability) {
-        elements = new ArrayList<>(c);
-        operationWrapper = new RandomlyFailingOperationWrapper(failureProbability);
-    }
-
-    public RandomlyFailingList(int initialCapacity, double failureProbability) {
-        elements = new ArrayList<>(initialCapacity);
+    public RandomlyFailingList(List<E> innerList, double failureProbability) {
+        elements = innerList;
         operationWrapper = new RandomlyFailingOperationWrapper(failureProbability);
     }
 
