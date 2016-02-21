@@ -1,25 +1,22 @@
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Timer;
 
 /**
  * Created by rishi on 2016-02-20.
  */
 public class RecoveryBlocksExecutor<T> implements Operation<T> {
-    private final ArrayList<Variant<T>> variants;
+    private final List<Variant<T>> variants;
     private final long variantTimeLimitMilliseconds;
     private final AcceptanceTest<T> acceptanceTest;
 
+    @SafeVarargs
     public RecoveryBlocksExecutor(long variantTimeLimitMilliseconds,
                                   AcceptanceTest<T> acceptanceTest,
                                   final Variant<T> primaryVariant,
                                   final Variant<T>... backupVariants) {
-        variants = new ArrayList<Variant<T>>() {
-            {
-                add(primaryVariant);
-                addAll(Arrays.asList(backupVariants));
-            }
-        };
+        variants = Arrays.asList(backupVariants);
+        variants.add(0, primaryVariant);
 
         this.variantTimeLimitMilliseconds = variantTimeLimitMilliseconds;
         this.acceptanceTest = acceptanceTest;
