@@ -44,6 +44,7 @@ public class RandomlyFailingList<E> implements List<E> {
 
     @Override
     public Iterator<E> iterator() {
+        ArrayList<Integer> a = new ArrayList<>();
         return new RandomlyFailingIterator();
     }
 
@@ -251,12 +252,18 @@ public class RandomlyFailingList<E> implements List<E> {
     }
 
     private class RandomlyFailingIterator implements Iterator<E> {
+        private final Iterator<E> iterator;
+
+        public RandomlyFailingIterator() {
+            this.iterator = elements.iterator();
+        }
+
         @Override
         public boolean hasNext() {
             return operationWrapper.execute(new Operation<Boolean>() {
                 @Override
                 public Boolean execute() {
-                    return elements.iterator().hasNext();
+                    return iterator.hasNext();
                 }
             });
         }
@@ -266,7 +273,7 @@ public class RandomlyFailingList<E> implements List<E> {
             return operationWrapper.execute(new Operation<E>() {
                 @Override
                 public E execute() {
-                    return elements.iterator().next();
+                    return iterator.next();
                 }
             });
         }
@@ -276,7 +283,7 @@ public class RandomlyFailingList<E> implements List<E> {
             operationWrapper.execute(new Operation<Void>() {
                 @Override
                 public Void execute() {
-                    elements.iterator().remove();
+                    iterator.remove();
                     return null;
                 }
             });
@@ -285,13 +292,13 @@ public class RandomlyFailingList<E> implements List<E> {
 
     private class RandomlyFailingListIterator implements ListIterator<E> {
 
-        private final int index;
+        private final ListIterator<E> listIterator;
 
         public RandomlyFailingListIterator(int index) {
             if (index < 0 || index > elements.size()) {
                 throw new IndexOutOfBoundsException("Index: " + index);
             }
-            this.index = index;
+            this.listIterator = elements.listIterator(index);
         }
 
         @Override
@@ -299,7 +306,7 @@ public class RandomlyFailingList<E> implements List<E> {
             return operationWrapper.execute(new Operation<Boolean>() {
                 @Override
                 public Boolean execute() {
-                    return elements.listIterator(index).hasNext();
+                    return listIterator.hasNext();
                 }
             });
         }
@@ -309,7 +316,7 @@ public class RandomlyFailingList<E> implements List<E> {
             return operationWrapper.execute(new Operation<E>() {
                 @Override
                 public E execute() {
-                    return elements.listIterator(index).next();
+                    return listIterator.next();
                 }
             });
         }
@@ -319,7 +326,7 @@ public class RandomlyFailingList<E> implements List<E> {
             return operationWrapper.execute(new Operation<Boolean>() {
                 @Override
                 public Boolean execute() {
-                    return elements.listIterator(index).hasPrevious();
+                    return listIterator.hasPrevious();
                 }
             });
         }
@@ -329,7 +336,7 @@ public class RandomlyFailingList<E> implements List<E> {
             return operationWrapper.execute(new Operation<E>() {
                 @Override
                 public E execute() {
-                    return elements.listIterator(index).previous();
+                    return listIterator.previous();
                 }
             });
         }
@@ -339,7 +346,7 @@ public class RandomlyFailingList<E> implements List<E> {
             return operationWrapper.execute(new Operation<Integer>() {
                 @Override
                 public Integer execute() {
-                    return elements.listIterator(index).nextIndex();
+                    return listIterator.nextIndex();
                 }
             });
         }
@@ -349,7 +356,7 @@ public class RandomlyFailingList<E> implements List<E> {
             return operationWrapper.execute(new Operation<Integer>() {
                 @Override
                 public Integer execute() {
-                    return elements.listIterator(index).previousIndex();
+                    return listIterator.previousIndex();
                 }
             });
         }
@@ -359,7 +366,7 @@ public class RandomlyFailingList<E> implements List<E> {
             operationWrapper.execute(new Operation<Void>() {
                 @Override
                 public Void execute() {
-                    elements.listIterator(index).remove();
+                    listIterator.remove();
                     return null;
                 }
             });
@@ -370,7 +377,7 @@ public class RandomlyFailingList<E> implements List<E> {
             operationWrapper.execute(new Operation<Void>() {
                 @Override
                 public Void execute() {
-                    elements.listIterator(index).set(e);
+                    listIterator.set(e);
                     return null;
                 }
             });
@@ -381,7 +388,7 @@ public class RandomlyFailingList<E> implements List<E> {
             operationWrapper.execute(new Operation<Void>() {
                 @Override
                 public Void execute() {
-                    elements.listIterator(index).add(e);
+                    listIterator.add(e);
                     return null;
                 }
             });
