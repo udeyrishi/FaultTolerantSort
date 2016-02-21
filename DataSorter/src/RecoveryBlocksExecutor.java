@@ -33,20 +33,32 @@ public class RecoveryBlocksExecutor<T> implements Operation<T> {
             OperationThread<T> variantThread = new OperationThread<>(variant);
             Watchdog watchdog = new Watchdog(variantThread);
             timer.schedule(watchdog, variantTimeLimitMilliseconds);
-            variantThread.start();
             try {
                 try {
+                    variantThread.start();
                     variantThread.join();
                     timer.cancel();
 
                     // Adjudicator
+                    if (variantThread.isKilled()) {
+                        throw new VariantFailureException(variant, "Timed out.");
+                    }
+
+                    if (variantThread.failed()) {
+                        throw new VariantFailureException(variant, variantThread.getFailureMessage());
+                    }
+
                     T result = variantThread.getResult();
                     if (acceptanceTest == null || acceptanceTest.testResult(result)) {
+                        System.out.println(String.format("Variant '%s' successfully produced acceptable results.",
+                                variant.getName()));
                         return result;
                     } else {
                         // Local exception
                         throw new VariantFailureException(variant, "Acceptance Test failed.");
                     }
+                } catch (VariantFailureException e) {
+                    throw e;
                 } catch (Exception e) {
                     // Local exception. Includes Acceptance test failures, timeouts, or other failures internal to
                     // the variant.
@@ -64,15 +76,15 @@ public class RecoveryBlocksExecutor<T> implements Operation<T> {
 
     private static class VariantFailureException extends Exception {
         public VariantFailureException(Variant<?> failedVariant) {
-            super(String.format("Variant '%s' failed.", failedVariant.getVariantName()));
+            super(String.format("Variant '%s' failed.", failedVariant.getName()));
         }
 
         public VariantFailureException(Variant<?> failedVariant, String cause) {
-            super(String.format("Variant '%s' failed. Cause: %s", failedVariant.getVariantName(), cause));
+            super(String.format("Variant '%s' failed. Cause: %s", failedVariant.getName(), cause));
         }
 
         public VariantFailureException(Variant<?> failedVariant, Throwable cause) {
-            this(failedVariant, cause.getMessage());
+            this(failedVariant, "Inner exception with message: " + cause.getMessage());
         }
     }
 
