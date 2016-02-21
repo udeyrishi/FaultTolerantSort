@@ -1,10 +1,10 @@
 #include <jni.h>
-#include "NativeInsertionSortLib.h"
+#include "NativeInsertionSortOperation.h"
 #include <stdio.h>
 
 void insertion_sort(jint *data, int length, double failure_probability);
 
-JNIEXPORT void JNICALL Java_NativeInsertionSortLib_insertion_1sort
+JNIEXPORT void JNICALL Java_NativeInsertionSortOperation_insertionSort
   (JNIEnv *env, jobject object, jintArray data, jdouble failure_probability) {
 
     jsize length = (*env)->GetArrayLength(env, data);
@@ -14,5 +14,9 @@ JNIEXPORT void JNICALL Java_NativeInsertionSortLib_insertion_1sort
 }
 
 void insertion_sort(jint *data, int length, double failure_probability) {
-    
+//    for (int i = 0; i < length; ++i) {
+//        printf("%d ", data[i]);
+//    }
+//
+//    printf("\nEnd C\n");
 }

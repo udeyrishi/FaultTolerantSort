@@ -4,12 +4,16 @@ import java.util.List;
 /**
  * Created by rishi on 2016-02-20.
  */
-public class NativeInsertionSortDriver implements Operation<List<Integer>>, Variant<List<Integer>> {
+public class NativeInsertionSortOperation implements Operation<List<Integer>>, Variant<List<Integer>> {
+    static {
+        System.loadLibrary("insertion_sort");
+    }
+
     private static final String VARIANT_NAME = "Insertion sort (native) backup variant";
     private final List<Integer> data;
     private final double failureProbability;
 
-    public NativeInsertionSortDriver(List<Integer> data, double failureProbability) {
+    public NativeInsertionSortOperation(List<Integer> data, double failureProbability) {
         if (failureProbability < 0.0 || failureProbability > 1.0) {
             throw new IllegalArgumentException("Failure probability needs to be between 0 and 1");
         }
@@ -23,11 +27,8 @@ public class NativeInsertionSortDriver implements Operation<List<Integer>>, Vari
 
     @Override
     public List<Integer> execute() {
-        NativeInsertionSortLib nativeInsertionSort = new NativeInsertionSortLib();
-        System.loadLibrary("insertion_sort");
-
         int[] dataArray = toPrimitiveArray(data);
-        nativeInsertionSort.insertion_sort(dataArray, failureProbability);
+        this.insertionSort(dataArray, failureProbability);
 
         return toJavaIntegerList(dataArray);
     }
@@ -48,4 +49,6 @@ public class NativeInsertionSortDriver implements Operation<List<Integer>>, Vari
 
         return dataArray;
     }
+
+    public native void insertionSort(int[] data, double failureProbability);
 }
