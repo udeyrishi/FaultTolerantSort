@@ -63,16 +63,16 @@ public class RecoveryBlocksExecutor<T> implements Operation<T> {
         throw new RecoveryBlocksSystemFailedException();
     }
 
-    private class VariantFailureException extends Exception {
-        public VariantFailureException(Variant<T> failedVariant) {
+    private static class VariantFailureException extends Exception {
+        public VariantFailureException(Variant<?> failedVariant) {
             super(String.format("Variant '%s' failed.", failedVariant.getVariantName()));
         }
 
-        public VariantFailureException(Variant<T> failedVariant, String cause) {
+        public VariantFailureException(Variant<?> failedVariant, String cause) {
             super(String.format("Variant '%s' failed. Cause: %s", failedVariant.getVariantName(), cause));
         }
 
-        public VariantFailureException(Variant<T> failedVariant, Throwable cause) {
+        public VariantFailureException(Variant<?> failedVariant, Throwable cause) {
             this(failedVariant, cause.getMessage());
         }
     }
