@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class DataSorter {
@@ -43,7 +44,9 @@ public class DataSorter {
 
         List<Integer> sorted;
         try {
-            sorted = executive.execute();
+            // Create a new list, because if the primary passed, sorted will be a RandomlyFailingList
+            // We don't want any more failures now
+            sorted = new ArrayList<>(executive.execute());
         } catch (RecoveryBlocksExecutor.RecoveryBlocksSystemFailedException e) {
             System.err.println(e.getMessage());
             return;
