@@ -15,7 +15,7 @@ JAVA_COMPILER=javac
 JAVA_SRC=*.java
 JAVA_FLAGS=-Xlint:unchecked
 NATIVE_SRC=*.c
-NATIVE_FLAGS=-I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/$(OS_NAME) -shared -fpic
+NATIVE_FLAGS=-std=c99 -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/$(OS_NAME) -shared -fpic
 
 default: native java
 
