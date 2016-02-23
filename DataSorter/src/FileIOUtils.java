@@ -35,6 +35,32 @@ public class FileIOUtils {
         return output;
     }
 
+    public static final FileIOUtils.Converter<Integer, String> INTEGER_TO_STRING_CONVERTER
+            = new FileIOUtils.Converter<Integer, String>() {
+        @Override
+        public String convert(Integer source) {
+            return source.toString();
+        }
+
+        @Override
+        public boolean isNullEquivalent(Integer source) {
+            return source == null;
+        }
+    };
+
+    public static final FileIOUtils.Converter<String, Integer> STRING_TO_INTEGER_CONVERTER
+            = new FileIOUtils.Converter<String, Integer>() {
+        @Override
+        public Integer convert(String source) {
+            return Integer.parseInt(source);
+        }
+
+        @Override
+        public boolean isNullEquivalent(String source) {
+            return source == null || source.trim().isEmpty();
+        }
+    };
+
     public interface Converter<T1, T2> {
         T2 convert(T1 source);
         boolean isNullEquivalent(T1 source);
