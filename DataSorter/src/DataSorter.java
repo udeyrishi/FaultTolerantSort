@@ -18,7 +18,7 @@ public class DataSorter {
             @SuppressWarnings({"unchecked"})
             RecoveryBlocksExecutor<List<Integer>> executive = new RecoveryBlocksExecutor<>(
                     args.timeLimitMilliseconds,
-                    null,
+                    DataSorter.<Integer>createIncreasingSortAcceptanceTest(),
                     primaryVariant,
                     backupVariant);
             // Create a new list, because if the primary passed, sorted will be a RandomlyFailingList
@@ -33,6 +33,25 @@ public class DataSorter {
         catch (IllegalArgumentException | RecoveryBlocksExecutor.RecoveryBlocksSystemFailedException e) {
             System.err.println(e.getMessage());
         }
+    }
+
+    private static <E extends Comparable<E>> AcceptanceTest<List<E>> createIncreasingSortAcceptanceTest() {
+        return new AcceptanceTest<List<E>>() {
+            @Override
+            public boolean testResult(List<E> result) {
+                E previous = null;
+
+                for (E i : result) {
+                    if (previous == null || i.compareTo(previous) >= 0) {
+                        previous = i;
+                    } else {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+        };
     }
 
     private static class DataSorterArgs {
