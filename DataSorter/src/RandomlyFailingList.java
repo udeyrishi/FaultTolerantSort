@@ -228,7 +228,7 @@ public class RandomlyFailingList<E> implements List<E> {
 
         public RandomlyFailingOperationWrapper(double failureProbability) throws IllegalArgumentException {
             if (failureProbability > 1.0 || failureProbability < 0.0) {
-                throw new IllegalArgumentException("failureProbability needs to be between 0 and 1.");
+                throw new IllegalArgumentException("Failure Probability needs to be between 0 and 1.");
             }
 
             this.failureProbability = failureProbability;
