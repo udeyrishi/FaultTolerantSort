@@ -31,16 +31,37 @@ public class DataSorter {
             return;
         }
 
-        RandomlyFailingList<Integer> randomlyFailingNumbers = new RandomlyFailingList<>(numbers,
-                                                                        args.primaryFailureProbability);
-        Variant<List<Integer>> primaryVariant = new HeapSortOperation<>(randomlyFailingNumbers);
-        Variant<List<Integer>> backupVariant = new NativeInsertionSortOperation(numbers,
-                                                                                args.backupFailureProbability);
+        RandomlyFailingList<Integer> randomlyFailingNumbers;
+        try {
+            randomlyFailingNumbers = new RandomlyFailingList<>(numbers, args.primaryFailureProbability);
+        } catch (IllegalArgumentException e) {
+            System.err.println(e.getMessage());
+            return;
+        }
 
-        // Needed because of possible unsafe use of varargs. Safe here
-        @SuppressWarnings({"unchecked"})
-        RecoveryBlocksExecutor<List<Integer>> executive
-                = new RecoveryBlocksExecutor<>(args.timeLimitMilliseconds, null, primaryVariant, backupVariant);
+        Variant<List<Integer>> primaryVariant = new HeapSortOperation<>(randomlyFailingNumbers);
+
+        Variant<List<Integer>> backupVariant;
+        try {
+            backupVariant = new NativeInsertionSortOperation(numbers, args.backupFailureProbability);
+        } catch (IllegalArgumentException e) {
+            System.err.println(e.getMessage());
+            return;
+        }
+
+        RecoveryBlocksExecutor<List<Integer>> executive;
+
+        try {
+            // Annotation needed because of possible unsafe use of varargs. Safe here
+            // Need to use this temp because annotations can only be used with variable declaration, not initialization
+            @SuppressWarnings({"unchecked"})
+            RecoveryBlocksExecutor<List<Integer>> temp = new RecoveryBlocksExecutor<>(args.timeLimitMilliseconds, null,
+                    primaryVariant, backupVariant);
+            executive = temp;
+        } catch (IllegalArgumentException e) {
+            System.err.println(e.getMessage());
+            return;
+        }
 
         List<Integer> sorted;
         try {

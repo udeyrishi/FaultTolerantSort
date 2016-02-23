@@ -13,13 +13,14 @@ public class NativeInsertionSortOperation implements Operation<List<Integer>>, V
     private final List<Integer> data;
     private final double failureProbability;
 
-    public NativeInsertionSortOperation(List<Integer> data, double failureProbability) {
+    public NativeInsertionSortOperation(List<Integer> data, double failureProbability) throws IllegalArgumentException {
         if (failureProbability < 0.0 || failureProbability > 1.0) {
             throw new IllegalArgumentException("Failure probability needs to be between 0 and 1");
         }
         this.failureProbability = failureProbability;
         this.data = data;
     }
+
     @Override
     public String getName() {
         return VARIANT_NAME;
@@ -34,7 +35,7 @@ public class NativeInsertionSortOperation implements Operation<List<Integer>>, V
     }
 
     private static ArrayList<Integer> toJavaIntegerList(int[] dataArray) {
-        ArrayList<Integer> list = new ArrayList<Integer>();
+        ArrayList<Integer> list = new ArrayList<>();
         for (int i : dataArray) {
             list.add(i);
         }

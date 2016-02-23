@@ -7,7 +7,7 @@ public class RandomlyFailingList<E> implements List<E> {
     private final List<E> elements;
     private final RandomlyFailingOperationWrapper operationWrapper;
 
-    public RandomlyFailingList(List<E> innerList, double failureProbability) {
+    public RandomlyFailingList(List<E> innerList, double failureProbability) throws IllegalArgumentException {
         elements = innerList;
         operationWrapper = new RandomlyFailingOperationWrapper(failureProbability);
     }
@@ -226,7 +226,7 @@ public class RandomlyFailingList<E> implements List<E> {
         private final double failureProbability;
         private long count = 0;
 
-        public RandomlyFailingOperationWrapper(double failureProbability) {
+        public RandomlyFailingOperationWrapper(double failureProbability) throws IllegalArgumentException {
             if (failureProbability > 1.0 || failureProbability < 0.0) {
                 throw new IllegalArgumentException("failureProbability needs to be between 0 and 1.");
             }

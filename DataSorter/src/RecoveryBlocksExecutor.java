@@ -16,7 +16,11 @@ public class RecoveryBlocksExecutor<T> implements Operation<T> {
     public RecoveryBlocksExecutor(long variantTimeLimitMilliseconds,
                                   AcceptanceTest<T> acceptanceTest,
                                   final Variant<T> primaryVariant,
-                                  final Variant<T>... backupVariants) {
+                                  final Variant<T>... backupVariants) throws IllegalArgumentException {
+
+        if (variantTimeLimitMilliseconds < 0) {
+            throw new IllegalArgumentException("The time limit for variants can't be negative.");
+        }
         variants = new ArrayList<>(Arrays.asList(backupVariants));
         variants.add(0, primaryVariant);
 
@@ -45,6 +49,7 @@ public class RecoveryBlocksExecutor<T> implements Operation<T> {
                     }
 
                     if (variantThread.failed()) {
+                        // If there was an unhandled exception in the operation
                         throw new VariantFailureException(variant, variantThread.getFailureMessage());
                     }
 
@@ -60,8 +65,7 @@ public class RecoveryBlocksExecutor<T> implements Operation<T> {
                 } catch (VariantFailureException e) {
                     throw e;
                 } catch (Exception e) {
-                    // Local exception. Includes Acceptance test failures, timeouts, or other failures internal to
-                    // the variant.
+                    // Something totally unhandled
                     throw new VariantFailureException(variant, e);
                 }
             } catch (VariantFailureException e) {
@@ -75,10 +79,6 @@ public class RecoveryBlocksExecutor<T> implements Operation<T> {
     }
 
     private static class VariantFailureException extends Exception {
-        public VariantFailureException(Variant<?> failedVariant) {
-            super(String.format("Variant '%s' failed.", failedVariant.getName()));
-        }
-
         public VariantFailureException(Variant<?> failedVariant, String cause) {
             super(String.format("Variant '%s' failed. Cause: %s", failedVariant.getName(), cause));
         }
