@@ -6,7 +6,7 @@ import java.util.TimerTask;
  * Created by rishi on 2016-02-20.
  */
 public class Watchdog extends TimerTask {
-    Thread watched;
+    private Thread watched;
 
     /**
      * Creates an instance of the {@link Watchdog}.
@@ -21,6 +21,7 @@ public class Watchdog extends TimerTask {
      * Kills the monitored thread.
      */
     @SuppressWarnings("deprecation")
+    @Override
     public void run() {
         watched.stop();
     }
