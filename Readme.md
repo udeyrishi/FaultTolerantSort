@@ -26,7 +26,7 @@ $ make datagen
 # To build just the DataSorter
 $ make sorter
 
-# To delete the bin/*.class and bin/*.so 
+# To delete the bin/*.class and bin/*.so
 # (or *.dylib on OS X) files:
 $ make clean
 ```
@@ -42,5 +42,5 @@ $ java DataGenerator path/to/output.txt <number of random ints>
 $ java DataSorter path/to/randomints.txt path/to/sortedoutput.txt <primary failure probability> <backup failure probability> <time limit in ms>
 ```
 
-If DataSorter throws ```java.lang.UnsatisfiedLinkError``` exception, then run ```export LD_LIBRARY_PATH=$(LD_LIBRARY_PATH):.```, and try again.
+If DataSorter throws ```java.lang.UnsatisfiedLinkError``` exception, then run ```export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:.```, and try again.
 
