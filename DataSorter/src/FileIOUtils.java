@@ -7,16 +7,39 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * A collection of handy static I/O utils functions and objects.
  * Created by rishi on 2016-02-21.
  */
 public class FileIOUtils {
 
+    /**
+     * Reads the contents from a file line by line, and creates a list containing elements corresponding to each
+     * line. The elements in the list are converted from the lines using the {@code converter}.
+     * The null equivalent objects are ignored. See: {@link Converter#isNullEquivalent(Object)}.
+     * @param filePath The path to the file.
+     * @param converter A {@link Converter<String, T>} to be used for converting the line (String) to the result's
+     *                  element.
+     * @param <T> The type of elements in the output list.
+     * @return The generated data list from the file.
+     * @throws IOException Thrown if the I/O operations to the file fail.
+     */
     public static <T> List<T> readFromFile(String filePath, Converter<String, T> converter) throws IOException {
         Path file = Paths.get(filePath);
         List<String> lines = Files.readAllLines(file, Charset.forName("UTF-8"));
         return convertList(lines, converter);
     }
 
+    /**
+     * Writes the {@code data}'s elements to a file, by converting the elements to strings using the
+     * {@code converter}.
+     * The null equivalent objects are ignored. See: {@link Converter#isNullEquivalent(Object)}.
+     * @param outputFilePath The path to the file.
+     * @param data The list containing the elements to be written out.
+     * @param converter A {@link Converter<T, ? extends CharSequence>} that will be used for converting the
+     *                  list elements to a file-writable {@link CharSequence}.
+     * @param <T> The data type of the list elements.
+     * @throws IOException Thrown if the I/O operations to the file fail.
+     */
     public static <T> void writeToFile(String outputFilePath, List<T> data, Converter<T, ? extends
             CharSequence> converter) throws IOException {
 
@@ -25,6 +48,15 @@ public class FileIOUtils {
         Files.write(file, dataToWrite, Charset.forName("UTF-8"));
     }
 
+    /**
+     * Converts the list by mapping each element to another using the converter. Ignores the null equivalent
+     * objects.
+     * @param src The source list.
+     * @param converter The {@link Converter} to be used.
+     * @param <T1> The data type of the elements in the source.
+     * @param <T2> The data type of the elements in the result.
+     * @return The mapped list.
+     */
     private static <T1, T2> List<T2> convertList(List<T1> src, Converter<T1, T2> converter) {
         ArrayList<T2> output = new ArrayList<>();
         for (T1 i : src) {
@@ -35,6 +67,9 @@ public class FileIOUtils {
         return output;
     }
 
+    /**
+     * A {@link Converter<Integer, String>} for parsing {@link String} objects to {@link Integer}.
+     */
     public static final FileIOUtils.Converter<Integer, String> INTEGER_TO_STRING_CONVERTER
             = new FileIOUtils.Converter<Integer, String>() {
         @Override
@@ -48,6 +83,9 @@ public class FileIOUtils {
         }
     };
 
+    /**
+     * A {@link Converter<String, Integer>} for parsing {@link Integer} objects to {@link String}.
+     */
     public static final FileIOUtils.Converter<String, Integer> STRING_TO_INTEGER_CONVERTER
             = new FileIOUtils.Converter<String, Integer>() {
         @Override
@@ -61,8 +99,25 @@ public class FileIOUtils {
         }
     };
 
+    /**
+     * An interface for an object that can convert objects from 1 type to another.
+     * @param <T1> The source object type.
+     * @param <T2> The destination object type.
+     */
     public interface Converter<T1, T2> {
+        /**
+         * Converts an object form {@link T1} to {@link T2}.
+         * @param source The source object.
+         * @return The converted object.
+         */
         T2 convert(T1 source);
+
+        /**
+         * Can be used for checking if the object is useless/null for the type {@link T1}. Can be used for checking
+         * if the object can be ignored.
+         * @param source The object to be verified.
+         * @return True if the object is null equivalent, else false.
+         */
         boolean isNullEquivalent(T1 source);
     }
 }

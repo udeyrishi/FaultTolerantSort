@@ -1,3 +1,7 @@
+/**
+ * A native JNI module for sorting an int list using insertion sort.
+ */
+
 #include "NativeInsertionSortOperation.h"
 #include <jni.h>
 #include <stdbool.h>
@@ -20,6 +24,7 @@ static JNIEnv *env_global = NULL;
 static uint64_t mem_access_count_global = 0;
 static double failure_probability_global = 0.0;
 
+// The public JNI insertion sort API.
 JNIEXPORT void JNICALL Java_NativeInsertionSortOperation_insertionSort
   (JNIEnv *env, jobject object, jintArray data, jdouble failure_probability) {
 
@@ -47,6 +52,7 @@ void insertion_sort(jint *data, int length) {
     }
 }
 
+// Checks if a random memory access failure should be produced now.
 bool check_failure() {
     double hazard = mem_access_count_global * failure_probability_global;
     double random_event = (double)rand()/(double)RAND_MAX;

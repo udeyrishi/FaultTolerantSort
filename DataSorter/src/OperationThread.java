@@ -1,4 +1,5 @@
 /**
+ * A {@link Thread} that runs an {@link Operation} in an exception safe way (catches all unhandled exceptions).
  * Created by rishi on 2016-02-20.
  */
 public class OperationThread<T> extends Thread {
@@ -8,6 +9,10 @@ public class OperationThread<T> extends Thread {
     private boolean uncaughtExceptionThrown = false;
     private String uncaughtExceptionMessage = null;
 
+    /**
+     * Creates an {@link OperationThread} object.
+     * @param operation The {@link Operation} to be executed.
+     */
     public OperationThread(Operation<T> operation) {
         this.operation = operation;
         this.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
@@ -19,6 +24,9 @@ public class OperationThread<T> extends Thread {
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void run() {
         try {
@@ -29,18 +37,35 @@ public class OperationThread<T> extends Thread {
         }
     }
 
+    /**
+     * Gets the results produced by the {@link Operation}.
+     * @return The results produced by the {@link Operation}. Null, if the {@link Operation} hasn't finished processing
+     * yet, or if it threw an unhandled exception.
+     */
     public T getResult() {
         return result;
     }
 
+    /**
+     * True if the thread was externally terminated using {@link Thread#stop()}.
+     * @return If the thread has been externally terminated or not.
+     */
     public boolean isKilled() {
         return this.isKilled;
     }
 
+    /**
+     * True, if the {@link Operation} threw an unhandled exception, else false.
+     * @return True, if the {@link Operation} threw an unhandled exception, else false.
+     */
     public boolean failed() {
         return this.uncaughtExceptionThrown;
     }
 
+    /**
+     * Returns the exception message if an unhandled exception was thrown by the {@link Operation}, else null.
+     * @return The exception message if an unhandled exception was thrown by the {@link Operation}, else null.
+     */
     public String getFailureMessage() {
         return this.uncaughtExceptionMessage;
     }

@@ -1,21 +1,32 @@
 import java.util.List;
 
 /**
+ * A {@link Variant} for sorting objects using the heap sort algorithm.
  * Created by rishi on 2016-02-20.
  */
 public class HeapSortOperation<T extends Comparable<T>> implements Operation<List<T>>, Variant<List<T>> {
     private static final String VARIANT_NAME = "Heap sort primary variant";
     private final List<T> data;
 
+    /**
+     * Creates a {@link HeapSortOperation} object.
+     * @param data The list to be sorted.
+     */
     public HeapSortOperation(List<T> data) {
         this.data = data;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getName() {
         return VARIANT_NAME;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<T> execute() {
         buildHeap();

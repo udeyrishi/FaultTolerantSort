@@ -4,6 +4,15 @@ import java.util.List;
 import java.util.Timer;
 
 /**
+ * A fault tolerant executive and adjudicator that can use multiple {@link Variant} objects to perform a computation
+ * and obtain the results.
+ *
+ * The failure may be because of an unhandled exception within the execution of a variant, or the run time
+ * exceeds a specified maximum run time, or the result doesn't pass the {@code acceptanceTest}, if any.
+ *
+ * Uses the {@link OperationThread} to run the variants in a multithreaded manner.
+ * Uses {@link AcceptanceTest} to validate the results of the variants.
+ * Uses {@link Watchdog} for preemption if needed.
  * Created by rishi on 2016-02-20.
  */
 public class RecoveryBlocksExecutor<T> implements Operation<T> {
@@ -11,6 +20,16 @@ public class RecoveryBlocksExecutor<T> implements Operation<T> {
     private final long variantTimeLimitMilliseconds;
     private final AcceptanceTest<T> acceptanceTest;
 
+    /**
+     * Creates a new instance of {@link RecoveryBlocksExecutor}.
+     * @param variantTimeLimitMilliseconds The maximum time that a {@link Variant} be allowed to run, before
+     *                                     preempting it.
+     * @param acceptanceTest The {@link AcceptanceTest} for validating the result for correctness. Can be null,
+     *                       if no validation is needed.
+     * @param primaryVariant The primary {@link Variant} for producing the results.
+     * @param backupVariants 0 or more backup {@link Variant}s that will be used if the {@code primaryVariant} fails.
+     * @throws IllegalArgumentException Thrown if {@code variantTimeLimitMilliseconds} is negative.
+     */
     // Needed because of possible unsafe use of varargs. Safe here
     @SafeVarargs
     public RecoveryBlocksExecutor(long variantTimeLimitMilliseconds,
@@ -29,8 +48,16 @@ public class RecoveryBlocksExecutor<T> implements Operation<T> {
     }
 
 
+    /**
+     * Executes all the {@link Variant}s, starting with the primary one, until one gives a failure free
+     * acceptable result. Prints the success and erroneous statuses to stdout and stderr (variant failures),
+     * respectively.
+     *
+     * @return The successful result.
+     * @throws RecoveryBlocksSystemFailedException Thrown if no {@link Variant} succeeded.
+     */
     @Override
-    public T execute() {
+    public T execute() throws RecoveryBlocksSystemFailedException {
         // Executive thread
         for (Variant<T> variant : variants) {
             Timer timer = new Timer();
@@ -78,6 +105,9 @@ public class RecoveryBlocksExecutor<T> implements Operation<T> {
         throw new RecoveryBlocksSystemFailedException();
     }
 
+    /**
+     * The local failure exception thrown every time a {@link Variant} fails.
+     */
     private static class VariantFailureException extends Exception {
         public VariantFailureException(Variant<?> failedVariant, String cause) {
             super(String.format("Variant '%s' failed. Cause: %s", failedVariant.getName(), cause));
@@ -88,6 +118,10 @@ public class RecoveryBlocksExecutor<T> implements Operation<T> {
         }
     }
 
+    /**
+     * The exception thrown if the {@link RecoveryBlocksExecutor} failed to get an acceptable result from all
+     * the {@link Variant}s.
+     */
     public static class RecoveryBlocksSystemFailedException extends RuntimeException {
         public RecoveryBlocksSystemFailedException() {
             super("The result could not be obtained because all variants failed.");

@@ -1,4 +1,5 @@
 /**
+ * The failure exception thrown when a memory access failure occurs.
  * Created by rishi on 2016-02-20.
  */
 public class MemoryAccessFailureException extends RuntimeException {

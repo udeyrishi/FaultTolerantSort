@@ -1,6 +1,12 @@
 import java.util.*;
 
 /**
+ * A list that randomly throws {@link MemoryAccessFailureException} based on a probability. Can be used for simulating
+ * failures.
+ * All APIs/operations on this object, or the corresponding {@link Iterator} and {@link ListIterator},
+ * can throw this exception, except the {@link RandomlyFailingList#toArray()} and
+ * {@link RandomlyFailingList#toArray(Object[])} method calls.
+ *
  * Created by rishi on 2016-02-20.
  */
 public class RandomlyFailingList<E> implements List<E> {
@@ -12,6 +18,9 @@ public class RandomlyFailingList<E> implements List<E> {
         operationWrapper = new RandomlyFailingOperationWrapper(failureProbability);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int size() {
         return operationWrapper.execute(new Operation<Integer>() {
@@ -22,6 +31,9 @@ public class RandomlyFailingList<E> implements List<E> {
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isEmpty() {
         return operationWrapper.execute(new Operation<Boolean>() {
@@ -32,6 +44,9 @@ public class RandomlyFailingList<E> implements List<E> {
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean contains(final Object o) {
         return operationWrapper.execute(new Operation<Boolean>() {
@@ -42,24 +57,36 @@ public class RandomlyFailingList<E> implements List<E> {
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Iterator<E> iterator() {
         ArrayList<Integer> a = new ArrayList<>();
         return new RandomlyFailingIterator();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Object[] toArray() {
         // Can't fail this, as it's a primitive array
         return elements.toArray();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public <T> T[] toArray(T[] a) {
         // Can't fail this, as it's a primitive array
         return elements.toArray(a);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean add(final E e) {
         return operationWrapper.execute(new Operation<Boolean>() {
@@ -70,6 +97,9 @@ public class RandomlyFailingList<E> implements List<E> {
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean remove(final Object o) {
         return operationWrapper.execute(new Operation<Boolean>() {
@@ -80,6 +110,9 @@ public class RandomlyFailingList<E> implements List<E> {
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean containsAll(final Collection<?> c) {
         return operationWrapper.execute(new Operation<Boolean>() {
@@ -90,6 +123,9 @@ public class RandomlyFailingList<E> implements List<E> {
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean addAll(final Collection<? extends E> c) {
         return operationWrapper.execute(new Operation<Boolean>() {
@@ -100,6 +136,9 @@ public class RandomlyFailingList<E> implements List<E> {
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean addAll(final int index, final Collection<? extends E> c) {
         return operationWrapper.execute(new Operation<Boolean>() {
@@ -110,6 +149,9 @@ public class RandomlyFailingList<E> implements List<E> {
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean removeAll(final Collection<?> c) {
         return operationWrapper.execute(new Operation<Boolean>() {
@@ -120,6 +162,9 @@ public class RandomlyFailingList<E> implements List<E> {
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean retainAll(final Collection<?> c) {
         return operationWrapper.execute(new Operation<Boolean>() {
@@ -130,6 +175,9 @@ public class RandomlyFailingList<E> implements List<E> {
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void clear() {
         operationWrapper.execute(new Operation<Void>() {
@@ -141,6 +189,9 @@ public class RandomlyFailingList<E> implements List<E> {
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public E get(final int index) {
         return operationWrapper.execute(new Operation<E>() {
@@ -151,6 +202,9 @@ public class RandomlyFailingList<E> implements List<E> {
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public E set(final int index, final E element) {
         return operationWrapper.execute(new Operation<E>() {
@@ -161,6 +215,9 @@ public class RandomlyFailingList<E> implements List<E> {
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void add(final int index, final E element) {
         operationWrapper.execute(new Operation<Void>() {
@@ -172,6 +229,9 @@ public class RandomlyFailingList<E> implements List<E> {
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public E remove(final int index) {
         return operationWrapper.execute(new Operation<E>() {
@@ -182,6 +242,9 @@ public class RandomlyFailingList<E> implements List<E> {
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int indexOf(final Object o) {
         return operationWrapper.execute(new Operation<Integer>() {
@@ -192,6 +255,9 @@ public class RandomlyFailingList<E> implements List<E> {
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int lastIndexOf(final Object o) {
         return operationWrapper.execute(new Operation<Integer>() {
@@ -202,16 +268,25 @@ public class RandomlyFailingList<E> implements List<E> {
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ListIterator<E> listIterator() {
         return new RandomlyFailingListIterator(0);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ListIterator<E> listIterator(int index) {
         return new RandomlyFailingListIterator(index);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<E> subList(final int fromIndex, final int toIndex) {
         return operationWrapper.execute(new Operation<List<E>>() {

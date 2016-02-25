@@ -2,6 +2,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The main class for the Data Sorter application.
+ */
 public class DataSorter {
 
     public static void main(String[] _args) {
@@ -54,6 +57,9 @@ public class DataSorter {
         };
     }
 
+    /**
+     * A small data encapsulating class for the args to the program.
+     */
     private static class DataSorterArgs {
 
         public final String inputFile;

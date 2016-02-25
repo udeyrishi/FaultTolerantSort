@@ -2,6 +2,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * A Java {@link Variant} wrapper for sorting a list of Integers using the native insertion_sort lib.
+ * A "libinsertion_sort.*" dynamic library should be present at runtime in the Java load path.
+ * * = platform specific extension
  * Created by rishi on 2016-02-20.
  */
 public class NativeInsertionSortOperation implements Operation<List<Integer>>, Variant<List<Integer>> {
@@ -13,6 +16,12 @@ public class NativeInsertionSortOperation implements Operation<List<Integer>>, V
     private final List<Integer> data;
     private final double failureProbability;
 
+    /**
+     * Creates a {@link NativeInsertionSortOperation} object.
+     * @param data The list to be sorted.
+     * @param failureProbability The failure probability to be passed to the native module.
+     * @throws IllegalArgumentException Thrown if the probability is not between 0 and 1.
+     */
     public NativeInsertionSortOperation(List<Integer> data, double failureProbability) throws IllegalArgumentException {
         if (failureProbability < 0.0 || failureProbability > 1.0) {
             throw new IllegalArgumentException("Failure probability needs to be between 0 and 1");
@@ -21,11 +30,17 @@ public class NativeInsertionSortOperation implements Operation<List<Integer>>, V
         this.data = data;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getName() {
         return VARIANT_NAME;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Integer> execute() {
         int[] dataArray = toPrimitiveArray(data);
@@ -51,5 +66,5 @@ public class NativeInsertionSortOperation implements Operation<List<Integer>>, V
         return dataArray;
     }
 
-    public native void insertionSort(int[] data, double failureProbability);
+    private native void insertionSort(int[] data, double failureProbability);
 }
