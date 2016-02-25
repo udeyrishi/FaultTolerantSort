@@ -29,15 +29,13 @@ SORTER_NATIVE_FLAGS=-std=c99 -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/$(OS_
 
 DATAGEN_SRC=DataGenerator.java FileIOUtils.java
 
-.PHONY: directories
+.PHONY: directories clean
 
 default: all
 
 all: directories datagen sorter
 
-directories: $(OUT_DIR)
-
-$(OUT_DIR):
+directories:
 	$(MKDIR_P) $(OUT_DIR)
 
 datagen: $(DATAGEN_SRC)
