@@ -6,6 +6,23 @@ import java.util.List;
  * The main class for the Data Sorter application.
  */
 public class DataSorter {
+    private static final AcceptanceTest<List<Integer>> SORT_ACCEPTANCE_TEST
+        = new AcceptanceTest<List<Integer>>() {
+            @Override
+            public boolean testResult(List<Integer> result) {
+                Integer previous = null;
+
+                for (Integer i : result) {
+                    if (previous == null || i.compareTo(previous) >= 0) {
+                        previous = i;
+                    } else {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+        };
 
     public static void main(String[] _args) {
         try {
@@ -21,7 +38,7 @@ public class DataSorter {
             @SuppressWarnings({"unchecked"})
             RecoveryBlocksExecutor<List<Integer>> executive = new RecoveryBlocksExecutor<>(
                     args.timeLimitMilliseconds,
-                    DataSorter.<Integer>createIncreasingSortAcceptanceTest(),
+                    SORT_ACCEPTANCE_TEST,
                     primaryVariant,
                     backupVariant);
             // Create a new list, because if the primary passed, sorted will be a RandomlyFailingList
@@ -36,25 +53,6 @@ public class DataSorter {
         catch (IllegalArgumentException | RecoveryBlocksExecutor.RecoveryBlocksSystemFailedException e) {
             System.err.println(e.getMessage());
         }
-    }
-
-    private static <E extends Comparable<E>> AcceptanceTest<List<E>> createIncreasingSortAcceptanceTest() {
-        return new AcceptanceTest<List<E>>() {
-            @Override
-            public boolean testResult(List<E> result) {
-                E previous = null;
-
-                for (E i : result) {
-                    if (previous == null || i.compareTo(previous) >= 0) {
-                        previous = i;
-                    } else {
-                        return false;
-                    }
-                }
-
-                return true;
-            }
-        };
     }
 
     /**
