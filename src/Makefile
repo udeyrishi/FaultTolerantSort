@@ -38,10 +38,10 @@ all: directories datagen sorter
 directories:
 	$(MKDIR_P) $(OUT_DIR)
 
-datagen: $(DATAGEN_SRC)
+datagen: directories $(DATAGEN_SRC)
 	$(JAVA_COMPILER) $(JAVA_FLAGS) $(DATAGEN_SRC)
 
-sorter: sorter_native sorter_java
+sorter: directories sorter_native sorter_java
 
 sorter_java: $(SORTER_SRC_JAVA)
 	$(JAVA_COMPILER) $(JAVA_FLAGS) $(SORTER_SRC_JAVA)
