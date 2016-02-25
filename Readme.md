@@ -1,5 +1,6 @@
 ECE 422 Project 1: Fault Tolerant DataSorter based on RcB
 --------------------------
+Submitted by: Udey Rishi
 
 Please see the ```src``` directory for the source code for both the DataGenerator and the DataSorter. They're in the same directory as they share some code, so it was convenient. Please see the ```docs``` directory for the design docs.
 
